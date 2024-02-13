@@ -10,7 +10,7 @@ import java.io.File;
 public class ConfigFeaturesCustomization implements IConfigCategory {
 
     @ConfigComment("Percent chance to run for task: zombie village raid task")
-    public static int zombieVillageRaidPercentChance = 33   ;
+    public static int zombieVillageRaidPercentChance = 33;
     @ConfigComment("Percent chance to run for task: zombie seeking turtle eggs to destroy")
     public static int zombieSearchAndDestroyTurtleEggPercentChance = 0;
     @ConfigComment("In addition to the timed delay, an additional percent chance to run for task: mob wander pathfinding")

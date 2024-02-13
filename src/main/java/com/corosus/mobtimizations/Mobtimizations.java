@@ -35,6 +35,7 @@ public class Mobtimizations
     {
         new File("./config/" + MODID).mkdirs();
         ConfigMod.addConfigFile(MODID, new ConfigFeatures());
+        ConfigMod.addConfigFile(MODID, new ConfigFeaturesCustomization());
     }
 
     public static int getCancels() {
