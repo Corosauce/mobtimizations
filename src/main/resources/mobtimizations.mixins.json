@@ -1,0 +1,20 @@
+{
+  "required": true,
+  "package": "com.corosus.mobtimizations.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "mobtimizations.refmap.json",
+  "mixins": [
+    "MixinMoveThroughVillageGoal",
+    "MixinPreventWandering",
+    "MixinRecomputePath",
+    "MixinRecomputePath2",
+    "MixinRemoveBlockGoal",
+    "MixinWalkNodeEvaluator",
+    "MixinNearestAttackableTargetGoal",
+    "MixinEntityFields"
+  ],
+  "injectors": {
+    "defaultRequire": 0
+  },
+  "minVersion": "0.8"
+}
