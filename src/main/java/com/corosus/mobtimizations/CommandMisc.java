@@ -18,12 +18,12 @@ public class CommandMisc {
 								c.getSource().sendSuccess(new TextComponent("Mod is now " + (Mobtimizations.modActive ? "active" : "inactive")), true);
 								return Command.SINGLE_SUCCESS;
 							})
-					).then(literal("test_spawn_1000_zombies").executes( c -> {
+					)/*.then(literal("test_spawn_1000_zombies").executes( c -> {
 								Mobtimizations.testSpawningActive = !Mobtimizations.testSpawningActive;
 								c.getSource().sendSuccess(new TextComponent("Test spawning is now " + (Mobtimizations.testSpawningActive ? "active" : "inactive")), true);
 								return Command.SINGLE_SUCCESS;
 							})
-					).then(literal("cancels").executes( c -> {
+					)*/.then(literal("cancels").executes( c -> {
 								c.getSource().sendSuccess(new TextComponent("Cancels " + (Mobtimizations.getCancels())), true);
 								return Command.SINGLE_SUCCESS;
 							})
