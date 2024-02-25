@@ -1,6 +1,5 @@
 package com.corosus.mobtimizations;
 
-import com.corosus.mobtimizations.Mobtimizations;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;
@@ -15,7 +14,7 @@ public class CommandMisc {
 			Commands.literal(getCommandName()).requires(s -> s.hasPermission(2))
 					.then(literal("toggle_on").executes( c -> {
 								Mobtimizations.modActive = !Mobtimizations.modActive;
-								c.getSource().sendSuccess(Component.literal("Mod is now " + (Mobtimizations.modActive ? "active" : "inactive")), true);
+								c.getSource().sendSuccess(() -> Component.literal("Mod is now " + (Mobtimizations.modActive ? "active" : "inactive")), true);
 								return Command.SINGLE_SUCCESS;
 							})
 					)/*.then(literal("test_spawn_1000_zombies").executes( c -> {
@@ -24,7 +23,7 @@ public class CommandMisc {
 								return Command.SINGLE_SUCCESS;
 							})
 					)*/.then(literal("cancels").executes( c -> {
-								c.getSource().sendSuccess(Component.literal("Cancels " + (Mobtimizations.getCancels())), true);
+								c.getSource().sendSuccess(() -> Component.literal("Cancels " + (Mobtimizations.getCancels())), true);
 								return Command.SINGLE_SUCCESS;
 							})
 					)

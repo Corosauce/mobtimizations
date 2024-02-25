@@ -117,13 +117,13 @@ public class Mobtimizations
             //long lastWander = mob.getPersistentData().getLong(Mobtimizations.lastWanderTime);
             long lastWander = ((MobtimizationEntityFields)mob).getlastWanderTime();
 
-            if (lastWander + ConfigFeaturesCustomization.mobWanderingDelay * multiplier > mob.level.getGameTime()) {
+            if (lastWander + ConfigFeaturesCustomization.mobWanderingDelay * multiplier > mob.level().getGameTime()) {
                 return false;
             } else {
-                //System.out.println("marked new path time: " + mob.level.getGameTime());
-                //LOGGER.info("marked new path time: " + mob.level.getGameTime());
-                //mob.getPersistentData().putLong(Mobtimizations.lastWanderTime, mob.level.getGameTime());
-                ((MobtimizationEntityFields)mob).setlastWanderTime(mob.level.getGameTime());
+                //System.out.println("marked new path time: " + mob.level().getGameTime());
+                //LOGGER.info("marked new path time: " + mob.level().getGameTime());
+                //mob.getPersistentData().putLong(Mobtimizations.lastWanderTime, mob.level().getGameTime());
+                ((MobtimizationEntityFields)mob).setlastWanderTime(mob.level().getGameTime());
             }
             return true;
         }
@@ -134,7 +134,7 @@ public class Mobtimizations
         if (!ConfigFeatures.playerProximityReducedRate) return false;
         //long lastPlayerScan = data.getLong(Mobtimizations.lastPlayerScanTime);
         long lastPlayerScan = ((MobtimizationEntityFields)mob).getlastPlayerScanTime();
-        if (lastPlayerScan + ConfigFeaturesCustomization.playerProximityReducedRatePlayerScanRate > mob.level.getGameTime()) {
+        if (lastPlayerScan + ConfigFeaturesCustomization.playerProximityReducedRatePlayerScanRate > mob.level().getGameTime()) {
             //TODO use a mixin to add a variable to mob instead of using nbt
             //return !data.getBoolean(playerInRange);
             return ((MobtimizationEntityFields)mob).isplayerInRange();
@@ -143,14 +143,14 @@ public class Mobtimizations
             boolean playerInRangeBool = checkIfPlayerInRange(mob);
             //data.putBoolean(playerInRange, playerInRangeBool);
             ((MobtimizationEntityFields)mob).setplayerInRange(playerInRangeBool);
-            //mob.getPersistentData().putLong(Mobtimizations.lastPlayerScanTime, mob.level.getGameTime());
-            ((MobtimizationEntityFields)mob).setlastPlayerScanTime(mob.level.getGameTime());
+            //mob.getPersistentData().putLong(Mobtimizations.lastPlayerScanTime, mob.level().getGameTime());
+            ((MobtimizationEntityFields)mob).setlastPlayerScanTime(mob.level().getGameTime());
             return !playerInRangeBool;
         }
     }
 
     private static boolean checkIfPlayerInRange(Mob mob) {
-        for (Player player : mob.level.players()) {
+        for (Player player : mob.level().players()) {
             if (player.distanceToSqr(mob) < ConfigFeaturesCustomization.playerProximityReducedRateRangeCutoff * ConfigFeaturesCustomization.playerProximityReducedRateRangeCutoff) {
                 return true;
             }
@@ -170,10 +170,6 @@ public class Mobtimizations
                 blockpathtypes = BlockPathTypes.DAMAGE_FIRE;
             }
 
-            if (blockpathtypes1 == BlockPathTypes.DAMAGE_CACTUS) {
-                blockpathtypes = BlockPathTypes.DAMAGE_CACTUS;
-            }
-
             if (blockpathtypes1 == BlockPathTypes.DAMAGE_OTHER) {
                 blockpathtypes = BlockPathTypes.DAMAGE_OTHER;
             }
@@ -184,6 +180,10 @@ public class Mobtimizations
 
             if (blockpathtypes1 == BlockPathTypes.POWDER_SNOW) {
                 blockpathtypes = BlockPathTypes.DANGER_POWDER_SNOW;
+            }
+
+            if (blockpathtypes1 == BlockPathTypes.DAMAGE_CAUTIOUS) {
+                blockpathtypes = BlockPathTypes.DAMAGE_CAUTIOUS;
             }
         }
 
