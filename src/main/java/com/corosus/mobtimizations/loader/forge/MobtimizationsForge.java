@@ -49,9 +49,9 @@ public class MobtimizationsForge extends Mobtimizations {
     }
 
     @SubscribeEvent
-    public void worldTick(TickEvent.WorldTickEvent event) {
+    public void worldTick(TickEvent.LevelTickEvent event) {
         if (Mobtimizations.testSpawningActive) {
-            Level level = event.world;
+            Level level = event.level;
             int huskOrZombieCount = 0;
             if (event.phase == TickEvent.Phase.END && level.dimension() == Level.OVERWORLD && level.getGameTime() % 100 == 0 && level instanceof ServerLevel serverLevel) {
                 for (Entity entity : serverLevel.getAllEntities()) {
