@@ -22,6 +22,9 @@ public class ConfigFeatures implements IConfigCategory {
     @ConfigComment("If true, disables the expensive 3x3x3 hazard scanning that is constantly running every tick while path following, for monsters only, your pets are safe")
     public static boolean optimizationMonsterHazardAvoidingPathfollowing = true;
 
+    @ConfigComment("Stops expensive overhead added to adding potion effects for non players on the server side")
+    public static boolean mod_ArmorSetBonuses_fixServerEffectImmunityCheckingOnNonPlayers = true;
+
     @ConfigComment("If true, wander pathfinding and enemy targeting attempts will be further reduced when far away from players")
     public static boolean playerProximityReducedRate = true;
 

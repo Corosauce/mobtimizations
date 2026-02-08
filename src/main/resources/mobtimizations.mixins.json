@@ -11,7 +11,8 @@
     "MixinRemoveBlockGoal",
     "MixinWalkNodeEvaluator",
     "MixinNearestAttackableTargetGoal",
-    "MixinEntityFields"
+    "MixinEntityFields",
+    "MixinArmorSetBonusesImmuneCheck"
   ],
   "injectors": {
     "defaultRequire": 0

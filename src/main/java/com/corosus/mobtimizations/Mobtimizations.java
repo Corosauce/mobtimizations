@@ -3,10 +3,15 @@ package com.corosus.mobtimizations;
 import com.corosus.coroutil.util.CU;
 import com.corosus.mobtimizations.config.ConfigFeatures;
 import com.corosus.mobtimizations.config.ConfigFeaturesCustomization;
+import com.corosus.mobtimizations.config.MobListsConfig;
 import com.corosus.modconfig.ConfigMod;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
@@ -15,6 +20,8 @@ import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import org.slf4j.Logger;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Mobtimizations
 {
@@ -31,11 +38,38 @@ public class Mobtimizations
     public static boolean testSpawningActive = false;
     private static int cancels = 0;
 
+    //avoid excessive forge config lookups incase its slow
+    private static HashMap<EntityType, Boolean> mobProcessCache = new HashMap<>();
+
     public Mobtimizations()
     {
         new File("./config/" + MODID).mkdirs();
         ConfigMod.addConfigFile(MODID, new ConfigFeatures());
         ConfigMod.addConfigFile(MODID, new ConfigFeaturesCustomization());
+
+        generateEntityTickList();
+    }
+
+    public static boolean canConfigEntity(EntityType ent) {
+        return ent.getCategory() != MobCategory.MISC;
+    }
+
+    public static boolean canProcessEntity(EntityType ent) {
+
+        Boolean processCache = mobProcessCache.get(ent);
+        if (processCache == null) {
+            if (canConfigEntity(ent)) {
+                if (MobListsConfig.GENERAL.blacklistMobs.get().contains(BuiltInRegistries.ENTITY_TYPE.getKey(ent).toString())) {
+                    processCache = MobListsConfig.GENERAL.useBlacklistAsWhitelist.get();
+                } else {
+                    processCache = !MobListsConfig.GENERAL.useBlacklistAsWhitelist.get();
+                }
+            } else {
+                processCache = false;
+            }
+            mobProcessCache.put(ent, processCache);
+        }
+        return processCache;
     }
 
     public static int getCancels() {
@@ -53,8 +87,9 @@ public class Mobtimizations
     }
 
     public static boolean canAvoidHazards(Mob mob) {
-        if (!Mobtimizations.modActive) return true;
+        if (!Mobtimizations.modActive || mob == null) return true;
         if (ConfigFeatures.optimizationMonsterHazardAvoidingPathfollowing) {
+            if (!canProcessEntity(mob.getType())) return true;
             if (mob instanceof Monster) {
                 return false;
             } else {
@@ -76,17 +111,19 @@ public class Mobtimizations
         return true;
     }
 
-    public static boolean canRecomputePath() {
+    public static boolean canRecomputePath(Mob mob) {
         if (!Mobtimizations.modActive) return true;
         if (ConfigFeatures.optimizationMobRepathfinding) {
+            if (!canProcessEntity(mob.getType())) return true;
             return false;
         }
         return true;
     }
 
-    public static boolean canVillageRaid() {
+    public static boolean canVillageRaid(Mob mob) {
         if (!Mobtimizations.modActive) return true;
         if (ConfigFeatures.optimizationZombieVillageRaid) {
+            if (!canProcessEntity(mob.getType())) return true;
             if (rollPercentChance(ConfigFeaturesCustomization.zombieVillageRaidPercentChance)) {
                 return true;
             } else {
@@ -99,6 +136,7 @@ public class Mobtimizations
     public static boolean canTarget(Mob mob) {
         if (!Mobtimizations.modActive) return true;
         if (ConfigFeatures.optimizationMobEnemyTargeting) {
+            if (!canProcessEntity(mob.getType())) return true;
             if (useReducedRates(mob)) {
                 return rollPercentChance(ConfigFeaturesCustomization.mobEnemyTargetingReducedRatePercentChance);
             } else {
@@ -111,6 +149,7 @@ public class Mobtimizations
     public static boolean canWander(Mob mob) {
         if (!Mobtimizations.modActive) return true;
         if (ConfigFeatures.optimizationMobWandering) {
+            if (!canProcessEntity(mob.getType())) return true;
             if (!rollPercentChance(ConfigFeaturesCustomization.mobWanderingPercentChance)) return false;
 
             float multiplier = useReducedRates(mob) ? ConfigFeaturesCustomization.mobWanderingReducedRateMultiplier : 1;
@@ -192,5 +231,14 @@ public class Mobtimizations
         }*/
 
         return blockpathtypes;
+    }
+
+    public static void generateEntityTickList() {
+        for(Map.Entry<ResourceKey<EntityType<?>>, EntityType<?>> entry : BuiltInRegistries.ENTITY_TYPE.entrySet()) {
+            boolean canConfig = canConfigEntity(entry.getValue());
+            if (canConfig) {
+                MobListsConfig.blacklistableMobsList.add(entry.getKey().location().toString());
+            }
+        }
     }
 }

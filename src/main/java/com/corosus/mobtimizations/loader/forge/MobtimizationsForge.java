@@ -3,6 +3,7 @@ package com.corosus.mobtimizations.loader.forge;
 import com.corosus.coroutil.util.CU;
 import com.corosus.mobtimizations.CommandMisc;
 import com.corosus.mobtimizations.Mobtimizations;
+import com.corosus.mobtimizations.config.MobListsConfig;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -17,10 +18,14 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+
+import java.io.File;
 
 @Mod(Mobtimizations.MODID)
 public class MobtimizationsForge extends Mobtimizations {
@@ -31,6 +36,8 @@ public class MobtimizationsForge extends Mobtimizations {
 
         MinecraftForge.EVENT_BUS.register(this);
         modEventBus.register(Mobtimizations.class);
+
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, MobListsConfig.CONFIG, Mobtimizations.MODID + File.separator + "MobsBlacklist.toml");
     }
 
     @SubscribeEvent
